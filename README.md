@@ -13,3 +13,4 @@
 7. Now index displays its source code in the same file ???
 8. Lots of testing and things only broke more now attempting to connect to local host says connection was reset
 9. found and fixed the issue but it still displays the source code not in html format
+10. added response.Header().Set("Content-Type", "text/html; charset=utf-8") now html displays correctly

@@ -12,7 +12,8 @@ func main() {
 	// Sets up a file server in current directory
 	//http.Handle("/", http.FileServer(http.Dir(".")))
 	http.HandleFunc("/", index)
-	http.HandleFunc("/top", topfunc)
+	http.HandleFunc("/top.html", topfunc)
+	http.HandleFunc("/log.html", logfunc)
 
 	//For each endpoint, call a function described below
 	// http.HandleFunc("/hello", hello)
@@ -27,17 +28,30 @@ func main() {
 
 func index(response http.ResponseWriter, request *http.Request) {
 	temp, _ := template.ParseFiles("html/index.html")
-	//temp.Execute(response, Signin)
+	response.Header().Set("Content-Type", "text/html; charset=utf-8")
+	//temp := template.Must(template.ParseFiles("html/index.html"))
+	//template.Must(template.New(".").Parse(temp))
 	temp.Execute(response, nil)
 	//temp.Execute(response, temp)
 }
 
 func topfunc(response http.ResponseWriter, request *http.Request) {
 	temp, _ := template.ParseFiles("html/top.html")
+	response.Header().Set("Content-Type", "text/html; charset=utf-8")
 	//cmd := exec.Command("top")
 	//temp.Execute(response, Signin)
 	top := exec.Command("top")
 	temp.Execute(response, top)
+	//temp.Execute(response, nil)
+}
+
+func logfunc(response http.ResponseWriter, request *http.Request) {
+	temp, _ := template.ParseFiles("html/log.html")
+	response.Header().Set("Content-Type", "text/html; charset=utf-8")
+	//cmd := exec.Command("top")
+	//temp.Execute(response, Signin)
+	log := exec.Command("tail", "-f", "-n", "5", "/var/log/syslog")
+	temp.Execute(response, log)
 	//temp.Execute(response, nil)
 }
 
