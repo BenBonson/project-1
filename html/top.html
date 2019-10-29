@@ -25,9 +25,21 @@
 						</li>
 					</div>
 				</nav>
-			
-		<p>yoyyoyoyo</p>
-		<p>{{ .TOP}}</p>
+					
+		<table class="table table-bordered">
+            <thead>
+              <tr>
+                  <th>Top-displays the cpu usage and running programs</th>
+              </tr>
+            </thead>
+            <tbody>
+                {{range .TOP}} 
+				<tr>
+                    <td align="center">{{.}}</td>
+                </tr>
+                {{end}}
+            </tbody>
+          </table>
 
 
 		<a href="go1.13.1.linux-amd64.tar.gz">Click here to download Go!</a>

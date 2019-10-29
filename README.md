@@ -17,6 +17,11 @@
 11. Tried to work on getting top to work, its not displayig anything
 12. main.go now displays all the html with top included, however it does so in the command line
 13. Got the results to print in HTML, its pretty ugly
+14. tried to print output into text file then transfer text to html, ended up with same problem as before
+15. Got it to print in a somewhat readable way
+16. Made table look a little better
+17. Added functionality to all current functions
+18. added descriptions to pages
 
 
 #notes/references

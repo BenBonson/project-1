@@ -3,17 +3,29 @@ package main
 import (
 	"fmt"
 	"html/template"
-	"log"
 	"net/http"
-	"os"
 	"os/exec"
 )
 
 //var top = exec.Command("top")
-
-// type Topcom struct {
-// 	TOP []string
+// type Topstru struct {
+// 	Name string
 // }
+
+//Topcom creates a strust for the output of top
+type Topcom struct {
+	TOP []string
+}
+
+//Logcom creates a strust for the output of log
+type Logcom struct {
+	LOG []string
+}
+
+//Indexcom creates a strust for the output of index
+type Indexcom struct {
+	IND []string
+}
 
 func main() {
 	// Sets up a file server in current directory
@@ -33,12 +45,31 @@ func main() {
 	// ssh()
 }
 
+//index runs the index page
 func index(response http.ResponseWriter, request *http.Request) {
 	temp, _ := template.ParseFiles("html/index.html")
 	response.Header().Set("Content-Type", "text/html; charset=utf-8")
+	ind := exec.Command("lsb_release", "-a")
+	indout, stderr := ind.Output()
+	in := Indexcom{IND: make([]string, 1)}
+	var count int = 0
+
+	if stderr != nil {
+		fmt.Println(stderr)
+	}
+	for i := 0; i < len(indout); i++ {
+		if indout[i] != 10 {
+			in.IND[count] += string(indout[i])
+		} else {
+			count++
+			in.IND = append(in.IND, "")
+		}
+	}
+
+	temp.Execute(response, in)
 	//temp := template.Must(template.ParseFiles("html/index.html"))
 	//template.Must(template.New(".").Parse(temp))
-	temp.Execute(response, nil)
+	//temp.Execute(response, nil)
 	//temp.Execute(response, temp)
 }
 
@@ -76,23 +107,103 @@ func topfunc(response http.ResponseWriter, request *http.Request) {
 	//temp.Execute(response, Signin)
 	//top := exec.Command("top")
 
-	top, err := exec.Command("top", "-b", "-n", "1").Output()
-	if err != nil {
-		fmt.Println("here")
-		log.Fatal(err)
-	}
-	tops := string(top)
-	//fmt.Println(tops)
+	top := exec.Command("top", "-b", "-n", "1")
+	topout, stderr := top.Output()
+	t := Topcom{TOP: make([]string, 1)}
+	var count int = 0
 
-	data := struct{ TOP string }{tops}
-
-	err = temp.Execute(os.Stdout, data)
-	if err != nil {
-		fmt.Println("error two")
-		panic(err)
+	if stderr != nil {
+		fmt.Println(stderr)
 	}
-	temp.Execute(response, data)
+	for i := 0; i < len(topout); i++ {
+		if topout[i] != 10 {
+			t.TOP[count] += string(topout[i])
+		} else {
+			count++
+			t.TOP = append(t.TOP, "")
+		}
+	}
+
+	temp.Execute(response, t)
+
+	// for "\n"; tops {
+	// 	topbreak = strings.Replace(tops, "\n", "<br>", -1)
+	// }
+
+	//topbreak := strings.Replace(tops, "\n", "<br/><br/>", -1)
+
+	// data := struct{ TOP string }{tops}
+
+	// err = temp.Execute(os.Stdout, data)
+	// if err != nil {
+	// 	fmt.Println("error two")
+	// 	panic(err)
+	// }
+	// temp.Execute(response, data)
 }
+
+// func topfunc(response http.ResponseWriter, request *http.Request) {
+// 	temp, _ := template.ParseFiles("html/top.html")
+// 	response.Header().Set("Content-Type", "text/html; charset=utf-8")
+// 	//cmd := exec.Command("top")
+// 	//temp.Execute(response, Signin)
+// 	//top := exec.Command("top")
+
+// 	top, err := exec.Command("top", "-b", "-n", "1").Output()
+// 	if err != nil {
+// 		fmt.Println("here")
+// 		log.Fatal(err)
+// 	}
+// 	tops := string(top)
+// 	//fmt.Println(tops)
+// 	data := WriteToFile("top.txt", tops)
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+
+// 	// data := struct{ TOP string }{tops}
+
+// 	// err = temp.Execute(os.Stdout, data)
+// 	// if err != nil {
+// 	// 	fmt.Println("error two")
+// 	// 	panic(err)
+// 	// }
+// 	temp.Execute(response, data)
+// }
+
+// func WriteToFile(filename string, data string) error {
+// 	cmd := exec.Command("rm", "top.txt")
+// 	cmd.Start()
+// 	cmd.Wait()
+// 	file, err := os.Create(filename)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	defer file.Close()
+
+// 	_, err = io.WriteString(file, data)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	return file.Sync()
+// }
+
+// func (toop *Topcom) AddItem(item Topstru) []Topstru {
+// 	toop.Items = append(toop.Items, item)
+// 	return toop.Items
+// }
+
+// func main() {
+
+// 	item1 := Topstru{Name: "Test Item 1"}
+
+// 	items := []Topstru{}
+// 	toop := Topcom{items}
+
+// 	toop.AddItem(item1)
+
+// 	fmt.Println(len(toop.Items))
+// }
 
 // func topfunc(w http.ResponseWriter, r *http.Request) {
 // 	temp, _ := template.ParseFiles("top.html")
@@ -122,45 +233,6 @@ func topfunc(response http.ResponseWriter, request *http.Request) {
 // 	temp.Execute(w, t)
 // }
 
-//combined w/gmac
-// func topfunc(w http.ResponseWriter, r *http.Request) {
-// 	temp, _ := template.ParseFiles("applications.html")
-// 	cmd := exec.Command("top", "-b", "-n", "1")
-// 	cmdout, stderr := cmd.Output()
-// 	t := Topcom{TOP: make([]string, 1)}
-// 	var count int = 0
-
-// 	if stderr != nil {
-// 		fmt.Println(stderr)
-// 	}
-// 	for i := 1; i < len(cmdout); i++ {
-// 		if cmdout[i] != 10 {
-// 			t.TOP[count] += string(cmdout[i])
-// 		} else {
-// 			count++
-// 			t.TOP = append(t.TOP, "")
-// 		}
-// 	}
-
-// 	temp.Execute(w, t)
-// }
-
-//prints out in command line but not html
-// func topfunc(response http.ResponseWriter, request *http.Request) {
-// 	temp, _ := template.ParseFiles("html/top.html")
-// 	response.Header().Set("Content-Type", "text/html; charset=utf-8")
-// 	//cmd := exec.Command("top")
-// 	//temp.Execute(response, Signin)
-// 	//top := exec.Command("top")
-
-// 	cmd := exec.Command("top", "-b", "-n", "1")
-// 	stdout, err := cmd.Output()
-
-// 	if err != nil {
-// 		println(err.Error())
-// 		return
-// 	}
-
 // 	tops := string(stdout)
 
 // 	data := struct{ TOP string }{tops}
@@ -182,24 +254,37 @@ func logfunc(response http.ResponseWriter, request *http.Request) {
 	response.Header().Set("Content-Type", "text/html; charset=utf-8")
 	//cmd := exec.Command("top")
 	//temp.Execute(response, Signin)
-	log, err := exec.Command("tail", "-n", "5", "/var/log/syslog").Output()
-	if err != nil {
-		fmt.Println("here")
-		panic(err)
+	log := exec.Command("tail", "-n", "25", "/var/log/syslog")
+	logout, stderr := log.Output()
+	l := Logcom{LOG: make([]string, 1)}
+	var count int = 0
+
+	if stderr != nil {
+		fmt.Println(stderr)
 	}
-	logs := string(log)
+	//logs := string(log)
 	//fmt.Println(tops)
-
-	data := struct{ LOG string }{logs}
-
-	err = temp.Execute(os.Stdout, data)
-	if err != nil {
-		fmt.Println("error two")
-		panic(err)
+	for i := 0; i < len(logout); i++ {
+		if logout[i] != 10 {
+			l.LOG[count] += string(logout[i])
+		} else {
+			count++
+			l.LOG = append(l.LOG, "")
+		}
 	}
-	temp.Execute(response, data)
+
+	//data := struct{ LOG string }{logs}
+
+	// err = temp.Execute(os.Stdout, data)
+	// if err != nil {
+	// 	fmt.Println("error two")
+	// 	panic(err)
+	// }
+	temp.Execute(response, l)
 	//temp.Execute(response, nil)
 }
+
+//temp.Execute(response, t)
 
 // func ssh() {
 // 	cmd := exec.Command("ssh", "user1@192.168.56.102")
@@ -212,62 +297,4 @@ func logfunc(response http.ResponseWriter, request *http.Request) {
 // 	}()
 // 	cmd.Start()
 // 	cmd.Wait()
-// }
-
-// func hello(response http.ResponseWriter, request *http.Request) {
-// 	navigation
-// 	name := request.FormValue("name")
-// 	output := []byte("Hello " + name)
-// 	fmt.Println(name, "says hello!")
-// 	response.Write(output)
-// }
-
-// //prints what is in html on this page
-// func hellohtml(response http.ResponseWriter, request *http.Request) {
-// 	response.Header().Set("Content-Type", "text/html")
-// 	//output := []byte("<html><body><h1>Hello There!</h1></body></html>")
-// 	//response.Write(output)
-// 	io.WriteString(response, `
-// 	<DOCTYPE html>
-// 	<html>
-// 	<head>
-// 		<title>My Page</title>
-// 	</head>
-// 	<body>
-// 		<h2>Welcome to My Page</h2>
-// 		<p>This is a test of a go server</p>
-// 	</body>
-// 	</html>
-// 	`)
-// }
-
-// //prints nothing by itself
-// //however if localhost:9000 is run first and the form filled it will print welcome username and their password
-// //in command line
-// func formsubmit(response http.ResponseWriter, request *http.Request) {
-// 	fmt.Println("Welcome", request.FormValue("user"))
-// 	fmt.Println("Your password is", request.FormValue("password"))
-// }
-
-// //template stuff prints Hello, Bob!
-// const hellotemplate = `
-// <!DOCTYPE html>
-// <html>
-// 	<head>
-// 		<title>Template Page</title>
-// 	</head>
-// 	<body>
-// 		<h1>Hello, {{.Name}}!</h1>
-// 	</body>
-// </html>
-// `
-
-// var hellotmpl = template.Must(template.New(".").Parse(hellotemplate))
-
-// func hellotemphandler(response http.ResponseWriter, request *http.Request) {
-// 	myCount.Add(1)
-// 	myStatus.Set("Good")
-// 	hellotmpl.Execute(response, map[string]interface{}{
-// 		"Name": "Bob",
-// 	})
 // }

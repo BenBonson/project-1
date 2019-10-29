@@ -26,8 +26,20 @@
 					</div>
 				</nav>
 			
-		<p>hihihihihi</p>
-		<p>{{ .LOG}}</p>
+		<table class="table table-bordered">
+            <thead>
+              <tr>
+                  <th>Log-displays the last 25 logs</th>
+              </tr>
+            </thead>
+            <tbody>
+                {{range .LOG}} 
+				<tr>
+                    <td align="center">{{.}}</td>
+                </tr>
+                {{end}}
+            </tbody>
+          </table>
 
 
 
