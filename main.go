@@ -37,6 +37,7 @@ func main() {
 	http.HandleFunc("/localtop.html", localtop)
 	http.HandleFunc("/locallog.html", locallog)
 	http.HandleFunc("/localsys.html", localsys)
+	http.HandleFunc("/pass.html", passfunc)
 
 	//For each endpoint, call a function described below
 	// http.HandleFunc("/hello", hello)
@@ -65,11 +66,13 @@ func index(response http.ResponseWriter, request *http.Request) {
 	//temp.Execute(response, temp)
 }
 
-//localsys runs system info
+//sysfunc runs system info
 func sysfunc(response http.ResponseWriter, request *http.Request) {
-	temp, _ := template.ParseFiles("html/localsys.html")
+	temp, _ := template.ParseFiles("html/sysinfo.html")
 	response.Header().Set("Content-Type", "text/html; charset=utf-8")
+
 	syst, stderr := exec.Command("ssh", "user1@192.168.56.102", "lsb_release", "-a").Output()
+	//syst, stderr := exec.Command("lsb_release", "-a").Output()
 	sy := Syscom{SYS: make([]string, 1)}
 	length := 0
 
@@ -92,9 +95,26 @@ func sysfunc(response http.ResponseWriter, request *http.Request) {
 	//temp.Execute(response, temp)
 }
 
+//pass runs system info
+func passfunc(response http.ResponseWriter, request *http.Request) {
+	temp, _ := template.ParseFiles("html/pass.html")
+	response.Header().Set("Content-Type", "text/html; charset=utf-8")
+
+	// if Remote {
+
+	// } else {
+
+	// }
+	//temp := template.Must(template.ParseFiles("html/index.html"))
+	//template.Must(template.New(".").Parse(temp))
+	temp.Execute(response, nil)
+	//temp.Execute(response, temp)
+
+}
+
 //sys runs system info
 func localsys(response http.ResponseWriter, request *http.Request) {
-	temp, _ := template.ParseFiles("html/sysinfo.html")
+	temp, _ := template.ParseFiles("html/localsys.html")
 	response.Header().Set("Content-Type", "text/html; charset=utf-8")
 	syst, stderr := exec.Command("lsb_release", "-a").Output()
 	sy := Syscom{SYS: make([]string, 1)}
@@ -212,6 +232,12 @@ func topfunc(response http.ResponseWriter, request *http.Request) {
 	}
 
 	temp.Execute(response, t)
+
+	// if _, err := client.Exec("cat /tmp/somefile"); err != nil {
+	//     log.Println(err)
+	// }
+
+	// return nil
 
 	// for "\n"; tops {
 	// 	topbreak = strings.Replace(tops, "\n", "<br>", -1)
@@ -341,6 +367,7 @@ func logfunc(response http.ResponseWriter, request *http.Request) {
 	response.Header().Set("Content-Type", "text/html; charset=utf-8")
 	//cmd := exec.Command("top")
 	//temp.Execute(response, Signin)
+	//password := passcheck.Pass()
 	log, stderr := exec.Command("ssh", "user1@192.168.56.102", "tail", "-n", "25", "/var/log/syslog").Output()
 	lo := Logcom{LOG: make([]string, 1)}
 	length := 0

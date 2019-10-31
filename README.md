@@ -23,10 +23,14 @@
 17. Added functionality to all current functions
 18. added descriptions to pages
 19. added lots of html to try and ssh
+20. added a .gitignore for passcheck for security
+21. everything works but you are prompted in command line for a password every time you ssh
 
 
-#notes/references
+# notes/references
 
 https://www.calhoun.io/intro-to-templates-p1-contextual-encoding/
 
 https://stackoverflow.com/questions/1877045/how-do-you-get-the-output-of-a-system-command-in-go
+
+https://stackoverflow.com/questions/46655138/golang-print-html-lines-dynamically
