@@ -18,13 +18,15 @@
 12. main.go now displays all the html with top included, however it does so in the command line
 13. Got the results to print in HTML, its pretty ugly
 14. tried to print output into text file then transfer text to html, ended up with same problem as before
-15. Got it to print in a somewhat readable way
+15. Got it to print in a somewhat readable way via golang templates
 16. Made table look a little better
 17. Added functionality to all current functions
 18. added descriptions to pages
 19. added lots of html to try and ssh
 20. added a .gitignore for passcheck for security
 21. everything works but you are prompted in command line for a password every time you ssh
+22. added ssh-key so no login is required
+23. made html look nicer
 
 
 # notes/references
@@ -34,3 +36,8 @@ https://www.calhoun.io/intro-to-templates-p1-contextual-encoding/
 https://stackoverflow.com/questions/1877045/how-do-you-get-the-output-of-a-system-command-in-go
 
 https://stackoverflow.com/questions/46655138/golang-print-html-lines-dynamically
+
+
+ssh-keygen -t rsa
+ssh-copy-id user1@ipaddress
+now i can use ssh user1@ipaddress w/out a password

@@ -37,7 +37,7 @@ func main() {
 	http.HandleFunc("/localtop.html", localtop)
 	http.HandleFunc("/locallog.html", locallog)
 	http.HandleFunc("/localsys.html", localsys)
-	http.HandleFunc("/pass.html", passfunc)
+	// http.HandleFunc("/pass.html", passfunc)
 
 	//For each endpoint, call a function described below
 	// http.HandleFunc("/hello", hello)
@@ -95,22 +95,22 @@ func sysfunc(response http.ResponseWriter, request *http.Request) {
 	//temp.Execute(response, temp)
 }
 
-//pass runs system info
-func passfunc(response http.ResponseWriter, request *http.Request) {
-	temp, _ := template.ParseFiles("html/pass.html")
-	response.Header().Set("Content-Type", "text/html; charset=utf-8")
+// //pass runs system info
+// func passfunc(response http.ResponseWriter, request *http.Request) {
+// 	temp, _ := template.ParseFiles("html/pass.html")
+// 	response.Header().Set("Content-Type", "text/html; charset=utf-8")
 
-	// if Remote {
+// 	// if Remote {
 
-	// } else {
+// 	// } else {
 
-	// }
-	//temp := template.Must(template.ParseFiles("html/index.html"))
-	//template.Must(template.New(".").Parse(temp))
-	temp.Execute(response, nil)
-	//temp.Execute(response, temp)
+// 	// }
+// 	//temp := template.Must(template.ParseFiles("html/index.html"))
+// 	//template.Must(template.New(".").Parse(temp))
+// 	temp.Execute(response, nil)
+// 	//temp.Execute(response, temp)
 
-}
+// }
 
 //sys runs system info
 func localsys(response http.ResponseWriter, request *http.Request) {
