@@ -12,19 +12,19 @@ import (
 // 	Name string
 // }
 
-//Topcom creates a strust for the output of top
+//Topcom creates a struct for the output of top
 type Topcom struct {
 	TOP []string
 }
 
-//Logcom creates a strust for the output of log
+//Logcom creates a struct for the output of log
 type Logcom struct {
 	LOG []string
 }
 
-//Indexcom creates a strust for the output of index
-type Indexcom struct {
-	IND []string
+//Syscom creates a struct for the output of sys
+type Syscom struct {
+	SYS []string
 }
 
 func main() {
@@ -33,6 +33,10 @@ func main() {
 	http.HandleFunc("/", index)
 	http.HandleFunc("/top.html", topfunc)
 	http.HandleFunc("/log.html", logfunc)
+	http.HandleFunc("/sysinfo.html", sysfunc)
+	http.HandleFunc("/localtop.html", localtop)
+	http.HandleFunc("/locallog.html", locallog)
+	http.HandleFunc("/localsys.html", localsys)
 
 	//For each endpoint, call a function described below
 	// http.HandleFunc("/hello", hello)
@@ -49,24 +53,66 @@ func main() {
 func index(response http.ResponseWriter, request *http.Request) {
 	temp, _ := template.ParseFiles("html/index.html")
 	response.Header().Set("Content-Type", "text/html; charset=utf-8")
-	ind := exec.Command("lsb_release", "-a")
-	indout, stderr := ind.Output()
-	in := Indexcom{IND: make([]string, 1)}
-	var count int = 0
+
+	// if Remote {
+
+	// } else {
+
+	// }
+	//temp := template.Must(template.ParseFiles("html/index.html"))
+	//template.Must(template.New(".").Parse(temp))
+	temp.Execute(response, nil)
+	//temp.Execute(response, temp)
+}
+
+//localsys runs system info
+func sysfunc(response http.ResponseWriter, request *http.Request) {
+	temp, _ := template.ParseFiles("html/localsys.html")
+	response.Header().Set("Content-Type", "text/html; charset=utf-8")
+	syst, stderr := exec.Command("ssh", "user1@192.168.56.102", "lsb_release", "-a").Output()
+	sy := Syscom{SYS: make([]string, 1)}
+	length := 0
 
 	if stderr != nil {
 		fmt.Println(stderr)
 	}
-	for i := 0; i < len(indout); i++ {
-		if indout[i] != 10 {
-			in.IND[count] += string(indout[i])
+	for l := 0; l < len(syst); l = l + 1 {
+		if syst[l] != 10 {
+			sy.SYS[length] += string(syst[l])
 		} else {
-			count++
-			in.IND = append(in.IND, "")
+			length = length + 1
+			sy.SYS = append(sy.SYS, "")
 		}
 	}
 
-	temp.Execute(response, in)
+	temp.Execute(response, sy)
+	//temp := template.Must(template.ParseFiles("html/index.html"))
+	//template.Must(template.New(".").Parse(temp))
+	//temp.Execute(response, nil)
+	//temp.Execute(response, temp)
+}
+
+//sys runs system info
+func localsys(response http.ResponseWriter, request *http.Request) {
+	temp, _ := template.ParseFiles("html/sysinfo.html")
+	response.Header().Set("Content-Type", "text/html; charset=utf-8")
+	syst, stderr := exec.Command("lsb_release", "-a").Output()
+	sy := Syscom{SYS: make([]string, 1)}
+	length := 0
+
+	if stderr != nil {
+		fmt.Println(stderr)
+	}
+	for l := 0; l < len(syst); l = l + 1 {
+		if syst[l] != 10 {
+			sy.SYS[length] += string(syst[l])
+		} else {
+			length = length + 1
+			sy.SYS = append(sy.SYS, "")
+		}
+	}
+
+	temp.Execute(response, sy)
 	//temp := template.Must(template.ParseFiles("html/index.html"))
 	//template.Must(template.New(".").Parse(temp))
 	//temp.Execute(response, nil)
@@ -100,6 +146,48 @@ func index(response http.ResponseWriter, request *http.Request) {
 // }
 
 //top gets the results of the top command and sends the results to the html page its ugly as sin but it works
+func localtop(response http.ResponseWriter, request *http.Request) {
+	temp, _ := template.ParseFiles("html/localtop.html")
+	response.Header().Set("Content-Type", "text/html; charset=utf-8")
+	//cmd := exec.Command("top")
+	//temp.Execute(response, Signin)
+	//top := exec.Command("top")
+
+	top, stderr := exec.Command("top", "-b", "-n", "1").Output()
+	t := Topcom{TOP: make([]string, 1)}
+	length := 0
+
+	if stderr != nil {
+		fmt.Println(stderr)
+	}
+	for l := 0; l < len(top); l = l + 1 {
+		if top[l] != 10 {
+			t.TOP[length] += string(top[l])
+		} else {
+			length = length + 1
+			t.TOP = append(t.TOP, "")
+		}
+	}
+
+	temp.Execute(response, t)
+
+	// for "\n"; tops {
+	// 	topbreak = strings.Replace(tops, "\n", "<br>", -1)
+	// }
+
+	//topbreak := strings.Replace(tops, "\n", "<br/><br/>", -1)
+
+	// data := struct{ TOP string }{tops}
+
+	// err = temp.Execute(os.Stdout, data)
+	// if err != nil {
+	// 	fmt.Println("error two")
+	// 	panic(err)
+	// }
+	// temp.Execute(response, data)
+}
+
+//top gets the results of the top command and sends the results to the html page its ugly as sin but it works
 func topfunc(response http.ResponseWriter, request *http.Request) {
 	temp, _ := template.ParseFiles("html/top.html")
 	response.Header().Set("Content-Type", "text/html; charset=utf-8")
@@ -107,19 +195,18 @@ func topfunc(response http.ResponseWriter, request *http.Request) {
 	//temp.Execute(response, Signin)
 	//top := exec.Command("top")
 
-	top := exec.Command("top", "-b", "-n", "1")
-	topout, stderr := top.Output()
+	top, stderr := exec.Command("ssh", "user1@192.168.56.102", "top", "-b", "-n", "1").Output()
 	t := Topcom{TOP: make([]string, 1)}
-	var count int = 0
+	length := 0
 
 	if stderr != nil {
 		fmt.Println(stderr)
 	}
-	for i := 0; i < len(topout); i++ {
-		if topout[i] != 10 {
-			t.TOP[count] += string(topout[i])
+	for l := 0; l < len(top); l = l + 1 {
+		if top[l] != 10 {
+			t.TOP[length] += string(top[l])
 		} else {
-			count++
+			length = length + 1
 			t.TOP = append(t.TOP, "")
 		}
 	}
@@ -248,28 +335,27 @@ func topfunc(response http.ResponseWriter, request *http.Request) {
 // 	//temp.Execute(response, nil)
 // }
 
-//logfunc gets the logs and sends the results to the html page its ugly as sin but it works
+//logfunc gets the logs and sends the results to the html page
 func logfunc(response http.ResponseWriter, request *http.Request) {
 	temp, _ := template.ParseFiles("html/log.html")
 	response.Header().Set("Content-Type", "text/html; charset=utf-8")
 	//cmd := exec.Command("top")
 	//temp.Execute(response, Signin)
-	log := exec.Command("tail", "-n", "25", "/var/log/syslog")
-	logout, stderr := log.Output()
-	l := Logcom{LOG: make([]string, 1)}
-	var count int = 0
+	log, stderr := exec.Command("ssh", "user1@192.168.56.102", "tail", "-n", "25", "/var/log/syslog").Output()
+	lo := Logcom{LOG: make([]string, 1)}
+	length := 0
 
 	if stderr != nil {
 		fmt.Println(stderr)
 	}
 	//logs := string(log)
 	//fmt.Println(tops)
-	for i := 0; i < len(logout); i++ {
-		if logout[i] != 10 {
-			l.LOG[count] += string(logout[i])
+	for l := 0; l < len(log); l = l + 1 {
+		if log[l] != 10 {
+			lo.LOG[length] += string(log[l])
 		} else {
-			count++
-			l.LOG = append(l.LOG, "")
+			length = length + 1
+			lo.LOG = append(lo.LOG, "")
 		}
 	}
 
@@ -280,7 +366,42 @@ func logfunc(response http.ResponseWriter, request *http.Request) {
 	// 	fmt.Println("error two")
 	// 	panic(err)
 	// }
-	temp.Execute(response, l)
+	temp.Execute(response, lo)
+	//temp.Execute(response, nil)
+}
+
+//locallog gets the logs and sends the results to the html page
+func locallog(response http.ResponseWriter, request *http.Request) {
+	temp, _ := template.ParseFiles("html/locallog.html")
+	response.Header().Set("Content-Type", "text/html; charset=utf-8")
+	//cmd := exec.Command("top")
+	//temp.Execute(response, Signin)
+	log, stderr := exec.Command("tail", "-n", "25", "/var/log/syslog").Output()
+	lo := Logcom{LOG: make([]string, 1)}
+	length := 0
+
+	if stderr != nil {
+		fmt.Println(stderr)
+	}
+	//logs := string(log)
+	//fmt.Println(tops)
+	for l := 0; l < len(log); l = l + 1 {
+		if log[l] != 10 {
+			lo.LOG[length] += string(log[l])
+		} else {
+			length = length + 1
+			lo.LOG = append(lo.LOG, "")
+		}
+	}
+
+	//data := struct{ LOG string }{logs}
+
+	// err = temp.Execute(os.Stdout, data)
+	// if err != nil {
+	// 	fmt.Println("error two")
+	// 	panic(err)
+	// }
+	temp.Execute(response, lo)
 	//temp.Execute(response, nil)
 }
 
