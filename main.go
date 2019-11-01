@@ -82,7 +82,7 @@ func localsys(response http.ResponseWriter, request *http.Request) {
 		if syst[l] != 10 {
 			sy.SYS[length] = sy.SYS[length] + string(syst[l])
 		} else {
-			sy.SYS = append(sy.SYS, "")
+			sy.SYS = append(sy.SYS, "\n")
 			length = length + 1
 		}
 	}
@@ -123,7 +123,7 @@ func localtop(response http.ResponseWriter, request *http.Request) {
 			//after the start of a new line/break append a blank for the next line to start in
 			//example if it was (t.TOP, "lol") all text after the first line will have lol infront and an extra
 			//lol will be printed after by itself
-			t.TOP = append(t.TOP, "")
+			t.TOP = append(t.TOP, "\n")
 			//adds 1 to the length
 			length = length + 1
 		}
@@ -148,7 +148,7 @@ func topfunc(response http.ResponseWriter, request *http.Request) {
 		if top[l] != 10 {
 			t.TOP[length] = t.TOP[length] + string(top[l])
 		} else {
-			t.TOP = append(t.TOP, "")
+			t.TOP = append(t.TOP, "\n")
 			length = length + 1
 		}
 	}
@@ -173,7 +173,7 @@ func logfunc(response http.ResponseWriter, request *http.Request) {
 		if log[l] != 10 {
 			lo.LOG[length] = lo.LOG[length] + string(log[l])
 		} else {
-			lo.LOG = append(lo.LOG, "")
+			lo.LOG = append(lo.LOG, "\n")
 			length = length + 1
 		}
 	}
@@ -199,7 +199,7 @@ func locallog(response http.ResponseWriter, request *http.Request) {
 		if log[l] != 10 {
 			lo.LOG[length] = lo.LOG[length] + string(log[l])
 		} else {
-			lo.LOG = append(lo.LOG, "")
+			lo.LOG = append(lo.LOG, "\n")
 			length = length + 1
 		}
 	}

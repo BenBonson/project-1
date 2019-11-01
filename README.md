@@ -295,3 +295,13 @@ now i can use ssh user1@ipaddress w/out a password
 // 	cmd.Start()
 // 	cmd.Wait()
 // }
+
+
+//for length < len(top) {
+//		if top[length] != 10 {
+//			t.TOP[length] = t.TOP[length] + string(top[length])
+//		} else {
+//			t.TOP = append(t.TOP, "\n")
+//			length = length + 1
+//		}
+//	}
