@@ -71,20 +71,20 @@ func sysfunc(response http.ResponseWriter, request *http.Request) {
 	temp, _ := template.ParseFiles("html/sysinfo.html")
 	response.Header().Set("Content-Type", "text/html; charset=utf-8")
 
-	syst, stderr := exec.Command("ssh", "user1@192.168.56.102", "lsb_release", "-a").Output()
-	//syst, stderr := exec.Command("lsb_release", "-a").Output()
+	syst, err := exec.Command("ssh", "user1@192.168.56.102", "lsb_release", "-a").Output()
+	//syst, err := exec.Command("lsb_release", "-a").Output()
 	sy := Syscom{SYS: make([]string, 1)}
 	length := 0
 
-	if stderr != nil {
-		fmt.Println(stderr)
+	if err != nil {
+		fmt.Println(err)
 	}
 	for l := 0; l < len(syst); l = l + 1 {
 		if syst[l] != 10 {
 			sy.SYS[length] += string(syst[l])
 		} else {
-			length = length + 1
 			sy.SYS = append(sy.SYS, "")
+			length = length + 1
 		}
 	}
 
@@ -116,19 +116,19 @@ func sysfunc(response http.ResponseWriter, request *http.Request) {
 func localsys(response http.ResponseWriter, request *http.Request) {
 	temp, _ := template.ParseFiles("html/localsys.html")
 	response.Header().Set("Content-Type", "text/html; charset=utf-8")
-	syst, stderr := exec.Command("lsb_release", "-a").Output()
+	syst, err := exec.Command("lsb_release", "-a").Output()
 	sy := Syscom{SYS: make([]string, 1)}
 	length := 0
 
-	if stderr != nil {
-		fmt.Println(stderr)
+	if err != nil {
+		fmt.Println(err)
 	}
 	for l := 0; l < len(syst); l = l + 1 {
 		if syst[l] != 10 {
 			sy.SYS[length] += string(syst[l])
 		} else {
-			length = length + 1
 			sy.SYS = append(sy.SYS, "")
+			length = length + 1
 		}
 	}
 
@@ -173,19 +173,19 @@ func localtop(response http.ResponseWriter, request *http.Request) {
 	//temp.Execute(response, Signin)
 	//top := exec.Command("top")
 
-	top, stderr := exec.Command("top", "-b", "-n", "1").Output()
+	top, err := exec.Command("top", "-b", "-n", "1").Output()
 	t := Topcom{TOP: make([]string, 1)}
 	length := 0
 
-	if stderr != nil {
-		fmt.Println(stderr)
+	if err != nil {
+		fmt.Println(err)
 	}
 	for l := 0; l < len(top); l = l + 1 {
 		if top[l] != 10 {
 			t.TOP[length] += string(top[l])
 		} else {
-			length = length + 1
 			t.TOP = append(t.TOP, "")
+			length = length + 1
 		}
 	}
 
@@ -215,19 +215,19 @@ func topfunc(response http.ResponseWriter, request *http.Request) {
 	//temp.Execute(response, Signin)
 	//top := exec.Command("top")
 
-	top, stderr := exec.Command("ssh", "user1@192.168.56.102", "top", "-b", "-n", "1").Output()
+	top, err := exec.Command("ssh", "user1@192.168.56.102", "top", "-b", "-n", "1").Output()
 	t := Topcom{TOP: make([]string, 1)}
 	length := 0
 
-	if stderr != nil {
-		fmt.Println(stderr)
+	if err != nil {
+		fmt.Println(err)
 	}
 	for l := 0; l < len(top); l = l + 1 {
 		if top[l] != 10 {
 			t.TOP[length] += string(top[l])
 		} else {
-			length = length + 1
 			t.TOP = append(t.TOP, "")
+			length = length + 1
 		}
 	}
 
@@ -368,12 +368,12 @@ func logfunc(response http.ResponseWriter, request *http.Request) {
 	//cmd := exec.Command("top")
 	//temp.Execute(response, Signin)
 	//password := passcheck.Pass()
-	log, stderr := exec.Command("ssh", "user1@192.168.56.102", "tail", "-n", "25", "/var/log/syslog").Output()
+	log, err := exec.Command("ssh", "user1@192.168.56.102", "tail", "-n", "25", "/var/log/syslog").Output()
 	lo := Logcom{LOG: make([]string, 1)}
 	length := 0
 
-	if stderr != nil {
-		fmt.Println(stderr)
+	if err != nil {
+		fmt.Println(err)
 	}
 	//logs := string(log)
 	//fmt.Println(tops)
@@ -381,8 +381,8 @@ func logfunc(response http.ResponseWriter, request *http.Request) {
 		if log[l] != 10 {
 			lo.LOG[length] += string(log[l])
 		} else {
-			length = length + 1
 			lo.LOG = append(lo.LOG, "")
+			length = length + 1
 		}
 	}
 
@@ -403,12 +403,12 @@ func locallog(response http.ResponseWriter, request *http.Request) {
 	response.Header().Set("Content-Type", "text/html; charset=utf-8")
 	//cmd := exec.Command("top")
 	//temp.Execute(response, Signin)
-	log, stderr := exec.Command("tail", "-n", "25", "/var/log/syslog").Output()
+	log, err := exec.Command("tail", "-n", "25", "/var/log/syslog").Output()
 	lo := Logcom{LOG: make([]string, 1)}
 	length := 0
 
-	if stderr != nil {
-		fmt.Println(stderr)
+	if err != nil {
+		fmt.Println(err)
 	}
 	//logs := string(log)
 	//fmt.Println(tops)
@@ -416,8 +416,8 @@ func locallog(response http.ResponseWriter, request *http.Request) {
 		if log[l] != 10 {
 			lo.LOG[length] += string(log[l])
 		} else {
-			length = length + 1
 			lo.LOG = append(lo.LOG, "")
+			length = length + 1
 		}
 	}
 
